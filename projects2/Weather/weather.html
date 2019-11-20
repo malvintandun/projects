@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        window.onload = function () {
+            var input = document.getElementById("weathercity");
+            
+
+            input.addEventListener("keyup", function (event) {
+                if (event.keyCode === 13) {
+                    sendWeatherRequest();
+                }
+            });
+
+        };
+
+        function sendWeatherRequest() {
+            // registration:
+            // http://home.openweathermap.org/users/sign_in
+            let weatherCity = document.getElementById("weathercity").value;
+            console.log("input :" + weatherCity)
+            apiKey = "4f2e7beffceedfa43f8e741bc5560181"; // your API key
+
+            request = new XMLHttpRequest();
+            request.onreadystatechange = weatherHandler;
+
+            request.open("GET", "https://" +
+                "api.openweathermap.org/data/2.5/weather?q=" +
+                weatherCity + ",de&appid=" + apiKey, true);
+            request.send();
+        }
+
+        function weatherHandler() {
+            if (this.readyState == this.DONE) {
+
+                //document.getElementById("statusText").innerHTML = "HTTP Response: " + this.responseText;
+
+                if (this.status == 200) { // HTTP OK                   
+                    var json = JSON.parse(this.responseText);
+                    var city = json["name"];
+                    var icon = json["weather"][0].icon;
+                    var temp = json["main"].temp - 273;
+                    var temp_min = json["main"].temp_min - 273;
+                    var temp_max = json["main"].temp_max - 273;
+                    var description = json["weather"][0].description;
+                    var main = json["weather"][0].main;
+                    document.getElementById("description").innerHTML = "description: " + description;
+                    document.getElementById("city").innerHTML = city;
+                    document.getElementById("main").innerHTML = main;
+                    document.getElementById("icon").src = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
+                    document.getElementById("temp").innerHTML = Math.round(temp) + "&#8451";
+                    document.getElementById("temp_min").innerHTML = "min: " + Math.round(temp_min) + "&#8451";
+                    document.getElementById("temp_max").innerHTML = "max: " + Math.round(temp_max) + "&#8451";
+                } else {
+                    document.getElementById("description").innerHTML = "City not found";
+                    document.getElementById("city").innerHTML = "";
+                    document.getElementById("main").innerHTML = "";
+                    document.getElementById("icon").src = "";
+                    document.getElementById("temp").innerHTML = "";
+                    document.getElementById("temp_min").innerHTML = "";
+                    document.getElementById("temp_max").innerHTML = "";
+                }
+            }
+        }
+
+    </script>
+    <style>
+        body{
+            margin-top: 20px;
+        }
+        html{
+            background-image: url("https://images.wallpaperscraft.com/image/clouds_porous_sky_116078_1920x1080.jpg");
+        }
+        .box {
+            width: 25%;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            margin: auto;
+            height: 1%;
+        }
+
+
+
+        .h1{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        
+        input{
+            margin-left: 10px;
+            margin-top: 10px;
+            width: 80%;
+            padding: 15px 22px;
+            border-radius: 40px;
+        }
+
+        input:focus{
+            outline: none;
+        }
+
+        .item {
+            width: 80%;
+            padding: 5px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .item2 {
+            float: left;
+            padding-right: 30px;
+            width: 100px;
+        }
+
+        .container {
+            text-align: center;
+            margin: auto;
+            width: 150px;
+        }
+
+        .container:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .details_p {
+            text-align: left;
+            font-family: Arial, Helvetica, sans-serif;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <input id="weathercity" placeholder="Input city here...">
+        <br>
+        <div class="container">
+            <div class="item">
+                <h1 id="city"></h1>
+            </div>
+            <div class="item">
+                <img id="icon" style="float:top"></img>
+                <p id="main" style="font-family: Arial, Helvetica, sans-serif; margin: 0; float: top;"></p>
+            </div>
+            <div class="item">
+                <h1 id="temp"></h1>
+            </div>
+        </div>
+        <div class="container">
+             <p id="temp_min" class="details_p"></p>
+             <p id="temp_max" class="details_p"></p>
+            <p id="description" class="details_p"></p>
+        </div>
+
+    </div>
+</body>
+
+</html>
